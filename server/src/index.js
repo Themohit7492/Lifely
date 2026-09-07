@@ -16,11 +16,8 @@ const admin = require("./routes/admin");
 const app = express();
 app.use(helmet());
 const allowedOrigins = new Set([
-  process.env.CLIENT_URL || "http://localhost:5173",
-  "http://localhost:5173",
-  "http://localhost:5174",
-  "http://127.0.0.1:5173",
-  "http://127.0.0.1:5174"
+  process.env.CLIENT_URL || "https://lifely-frontend.onrender.com",
+  "https://lifely-frontend.onrender.com"
 ]);
 app.use(cors({
   origin: (origin, callback) => callback(null, !origin || allowedOrigins.has(origin)),
@@ -37,7 +34,7 @@ app.use("/api/recipients", recipients);
 app.use("/api/contact-requests", contact);
 app.use("/api/notifications", notifications);
 app.use("/api/admin", admin);
-
+app.get("/",(req, res) => res.send("Lifely backend API is running."));
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(err.status || 500).json({ message: err.message || "Something went wrong." });

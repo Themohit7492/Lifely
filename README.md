@@ -4,5 +4,5 @@ A full-stack React + Express + MongoDB starter implementing the requested Lifely
 
 Set `MONGO_URI`, `JWT_SECRET`, and `CLIENT_URL` in `server/.env`.
 
-The client expects the API at `http://localhost:8080/api`.
+The client expects the API at `https://lifely-s5pe.onrender.com/api`.
 
