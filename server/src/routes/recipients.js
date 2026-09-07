@@ -1,0 +1,7 @@
+const router=require("express").Router(); const auth=require("../middleware/auth"); const Recipient=require("../models/RecipientRequest");
+router.post("/",auth,async(req,res)=>{try{res.status(201).json(await Recipient.create({...req.body,userId:req.user._id}));}catch(e){res.status(400).json({message:e.message});}});
+router.get("/",async(req,res)=>{const q={requestStatus:"active"};if(req.query.type)q.requiredDonationType=req.query.type;if(req.query.city)q["location.city"]=new RegExp("^"+req.query.city+"$","i");if(req.query.urgency)q.urgency=req.query.urgency;if(req.query.verified==="true")q.verificationStatus="verified";res.json(await Recipient.find(q).sort({urgency:1,createdAt:-1}).limit(Math.min(Number(req.query.limit)||24,100)));});
+router.get("/:id",async(req,res)=>{const r=await Recipient.findById(req.params.id);if(!r)return res.status(404).json({message:"Request not found."});res.json(r);});
+router.put("/:id",auth,async(req,res)=>{const r=await Recipient.findOneAndUpdate({_id:req.params.id,userId:req.user._id},req.body,{new:true,runValidators:true});if(!r)return res.status(404).json({message:"Request not found."});res.json(r);});
+router.delete("/:id",auth,async(req,res)=>{const r=await Recipient.findOneAndUpdate({_id:req.params.id,userId:req.user._id},{requestStatus:"closed",closedAt:new Date()},{new:true});if(!r)return res.status(404).json({message:"Request not found."});res.json({message:"Request closed."});});
+module.exports=router;
